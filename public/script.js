@@ -37,3 +37,37 @@
 
         window.addEventListener('storage', render);
         window.onload = render;
+
+
+                function loadFeedbacks() {
+            const listArr = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            const listDiv = document.getElementById('adminList');
+            listDiv.innerHTML = '';
+
+            listArr.sort((a, b) => b.likes - a.likes);
+
+            listArr.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'feedback-item';
+                div.innerHTML = `
+                    <div class="info">
+                        <span class="likes-badge">👍 ${item.likes}</span>
+                        <span style="margin-left:10px">${item.text}</span>
+                    </div>
+                    <button class="del-btn" onclick="deleteFeedback(${item.id})">삭제</button>
+                `;
+                listDiv.appendChild(div);
+            });
+        }
+
+        function deleteFeedback(id) {
+            if(confirm("이 피드백을 삭제하시겠습니까?")) {
+                let listArr = JSON.parse(localStorage.getItem('feedbacks')) || [];
+                listArr = listArr.filter(item => item.id !== id);
+                localStorage.setItem('feedbacks', JSON.stringify(listArr));
+                loadFeedbacks(); 
+            }
+        }
+
+        window.addEventListener('storage', loadFeedbacks);
+        window.onload = loadFeedbacks;
