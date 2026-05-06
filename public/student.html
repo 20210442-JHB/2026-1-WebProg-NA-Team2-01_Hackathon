@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>학생 피드백 게시판</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .form-box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        textarea { width: 100%; height: 80px; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; }
+        .sub-btn { background: #198754; color: white; border: none; padding: 10px 20px; width: 100%; cursor: pointer; margin-top: 10px; border-radius: 4px; }
+        .item { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .like-btn { cursor: pointer; border: 1px solid #ddd; background: #eee; padding: 5px 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🙋‍♂️ 학생 피드백 보내기</h2>
+        <div class="form-box">
+            <textarea id="fbInput" placeholder="익명으로 피드백을 남겨주세요."></textarea>
+            <button class="sub-btn" onclick="submitFB()">피드백 제출</button>
+        </div>
+        <div id="studentList"></div>
+    </div>
+
+    <script>
+        function submitFB() {
+            const text = document.getElementById('fbInput').value;
+            if(!text) return alert("내용을 입력하세요.");
+
+            const feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            feedbacks.push({ id: Date.now(), text: text, likes: 0 });
+            localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+            
+            document.getElementById('fbInput').value = '';
+            render();
+        }
+
+        function addLike(id) {
+            let feedbacks = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            const target = feedbacks.find(f => f.id === id);
+            if(target) {
+                target.likes += 1;
+                localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+                render();
+            }
+        }
+
+        function render() {
+            const listArr = JSON.parse(localStorage.getItem('feedbacks')) || [];
+            const listDiv = document.getElementById('studentList');
+            listDiv.innerHTML = '';
+            listArr.reverse().forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <span>${item.text}</span>
+                    <button class="like-btn" onclick="addLike(${item.id})">👍 ${item.likes}</button>
+                `;
+                listDiv.appendChild(div);
+            });
+        }
+
+        window.addEventListener('storage', render);
+        window.onload = render;
+    </script>
+</body>
+</html>
