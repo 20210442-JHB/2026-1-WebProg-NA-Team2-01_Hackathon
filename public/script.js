@@ -51,7 +51,7 @@
                 div.className = 'feedback-item';
                 div.innerHTML = `
                     <div class="info">
-                        <span class="likes-badge">👍 ${item.likes}</span>
+                        <span class="likes-badge"> ${item.likes}</span>
                         <span style="margin-left:10px">${item.text}</span>
                     </div>
                     <button class="del-btn" onclick="deleteFeedback(${item.id})">삭제</button>
