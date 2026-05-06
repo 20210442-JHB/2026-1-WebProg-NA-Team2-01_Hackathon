@@ -29,7 +29,7 @@
                 div.className = 'item';
                 div.innerHTML = `
                     <span>${item.text}</span>
-                    <button class="like-btn" onclick="addLike(${item.id})">👍 ${item.likes}</button>
+                    <button class="like-btn" onclick="addLike(${item.id})"> ${item.likes}</button>
                 `;
                 listDiv.appendChild(div);
             });
